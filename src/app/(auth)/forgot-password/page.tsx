@@ -6,6 +6,7 @@ import AuthPagesRightSide from '@/components/AuthPagesRightSide';
 import ButtonOne from '@/components/button/ButtonOne';
 import { showToast } from '@/components/HotToast';
 import InputField from '@/components/inputs/InputField';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { resetPassword } from '@/features/auth/actions';
 import { passwordRecoverySchema, PasswordRecoveryType } from '@/features/auth/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +14,6 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Toaster } from 'react-hot-toast';
 
 const OTPConfirmModal = dynamic(() => import("@/components/OTPConfirmModal"), {
     loading: () => <Loading />,
@@ -25,7 +25,6 @@ const OTPConfirmModal = dynamic(() => import("@/components/OTPConfirmModal"), {
 
 const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({ data }) => {
     const [isOTPOpen, setIsOTPOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const [emailAddress, setEmailAddress] = useState('');
     
@@ -40,39 +39,31 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({ data }) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isSubmitting, errors },
         } = useForm<PasswordRecoveryType>({
         resolver: zodResolver(passwordRecoverySchema),
         defaultValues: data,
     });
     
     const onFormSubmit = handleSubmit(async (data) => {
-        setIsLoading(true);
         try {
             const res = await resetPassword(data.email);
             
             if (res.success) {
-                setIsLoading(false);
                 setIsOTPOpen(true);
                 setTimeout(() => {
                     showToast(`${res.message}`);
                 }, 500);
             }
         } catch (error) {
-            setIsLoading(false);
             setTimeout(() => {
                 showToast(`Error: ${(error as Error).message || 'An unexpected error occurred'}`, 'error');
             }, 500);
         }
     });
 
-    if (isLoading) {
-        return <Loading />;
-    };
-
   return (
     <div className='h-full min-h-screen w-full flex flex-col md:flex-row '>
-        <Toaster position="top-center" reverseOrder={false} />
         <div className='w-full flex flex-col md:flex-row items-center justify-center'>
             <div className='overflow-hidden order-2 md:order-1 w-full md:w-1/2 h-fit py-8 md:h-screen min-h-full'>
                 <div className="flex flex-col gap-6 w-[90%] md:w-[50%] h-1/2 mx-auto pt-1 md:pt-16">
@@ -97,7 +88,13 @@ const ForgotPasswordPage: React.FC<ForgotPasswordProps> = ({ data }) => {
                                     />                                    
                                 </div>
                                 
-                                <ButtonOne type='submit' classes='py-[8px] px-2 w-[20%] text-sm text-center rounded-xl' btnText1='Verify' />
+                                <ButtonOne
+                                    type='submit'
+                                    classes='py-[8px] px-2 w-[20%] text-sm text-center rounded-xl'
+                                    disabled={isSubmitting}
+                                    icon1={isSubmitting ? <LoadingSpinner color='text-white' /> : ''}
+                                    btnText1={isSubmitting ? 'Verifying...' : 'Verify'}
+                                />
                             </div>
                             
                             <p className='text-center text-sm'>Don&apos;t have an account? <Link href='/register' className='text-blue-600'>Sign up</Link></p>

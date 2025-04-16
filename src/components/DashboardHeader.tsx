@@ -65,8 +65,6 @@ const DashboardHeader = () => {
     }
   }, [reference, token, referenceData, currentData, setCurrentData]);
   
-  if (hasError) return <div>Error loading user data</div>;
-
   const handleBalanceToggle = (id: number) => {
     setOpenBalances(prev => {
       const updated = new Set(prev);
@@ -116,7 +114,9 @@ const DashboardHeader = () => {
                   <span className={`${item.currency === '₦' ? 'text-green-600' : item.currency === '£' ? 'text-red-600' : 'text-blue-800'} font-extrabold`}>
                     {item.currency}
                   </span>
-                  {(isPending || isLoading) ? <LoadingSpinner /> : (wallet && !openBalances.has(item.id)) ?
+                  {(isPending || isLoading) ? <LoadingSpinner /> : 
+                  hasError ? <em className='text-sm'>Error loading user data</em> : 
+                  (wallet && !openBalances.has(item.id)) ?
                     <CountUp start={0} end={item.currency === '₦' ? wallet.current_balance || 0.00 : 0.00} duration={2} delay={0} decimals={2} /> :
                     "******"}
                 </p>

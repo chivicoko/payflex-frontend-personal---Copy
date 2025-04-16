@@ -27,8 +27,6 @@ const Navbar: React.FC = () => {
       if (nameArray) setFirstName(nameArray[0]);
     }
   }, [user?.name, user]);
-
-  if (hasError) return <div>Error loading user data</div>;
   
   const closeSidebar = () => setOpen(false);
 
@@ -50,7 +48,7 @@ const Navbar: React.FC = () => {
               <p className="font-semibold md:text-3xl lg:text-4xl hidden md:inline">PayFlex</p>
           </Link> */}
           <h1 className='text-base md:text-xl font-semibold py-1'>
-            Hi, {isPending ? <LoadingSpinner/> : <span className='text-blue-700'>{firstName}</span>}
+            Hi, {isPending ? <LoadingSpinner/> : <span className='text-blue-700'>{hasError ? <em className='text-sm'>Error loading user data</em> : firstName}</span>}
           </h1>
         </div>
         

@@ -1,11 +1,11 @@
 "use client"
 
-import Loading from '@/app/loading';
 import AuthPagesHeader from '@/components/AuthPagesHeader';
 import AuthPagesRightSide from '@/components/AuthPagesRightSide';
 import ButtonOne from '@/components/button/ButtonOne';
 import { showToast } from '@/components/HotToast';
 import InputField from '@/components/inputs/InputField';
+import LoadingSpinner from '@/components/LoadingSpinner';
 import { updatePassword } from '@/features/auth/actions';
 import { newPasswordSchema, NewPasswordType } from '@/features/auth/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Toaster } from 'react-hot-toast';
 
 interface ChangenewPasswordPageProps {
     data?: NewPasswordType;
@@ -22,7 +21,6 @@ interface ChangenewPasswordPageProps {
 
 const ChangenewPasswordPage: React.FC<ChangenewPasswordPageProps> = ({ data }) => {
     const [isPasswordOpen, setIsPasswordOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
     const handlePasswordToggle = () => setIsPasswordOpen(prev => !prev);
@@ -30,19 +28,17 @@ const ChangenewPasswordPage: React.FC<ChangenewPasswordPageProps> = ({ data }) =
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isSubmitting, errors },
         } = useForm<NewPasswordType>({
         resolver: zodResolver(newPasswordSchema),
         defaultValues: data,
     });
     
     const onFormSubmit = handleSubmit(async (data) => {
-        setIsLoading(true);
         try {
             const res = await updatePassword(data.email, data.new_password);
             
             if (res.success) {
-                setIsLoading(false);
                 router.push('/login');
             }
 
@@ -50,20 +46,14 @@ const ChangenewPasswordPage: React.FC<ChangenewPasswordPageProps> = ({ data }) =
                 showToast(`${res.message}`);
             }, 500);
         } catch (error) {
-            setIsLoading(false);
             setTimeout(() => {
                 showToast(`Error: ${(error as Error).message || 'An unexpected error occurred'}`, 'error');
             }, 500);
         }
     });
     
-    if (isLoading) {
-        return <Loading />;
-    };
-    
   return (
     <div className='h-full min-h-screen w-full flex flex-col md:flex-row '>
-        <Toaster position="top-center" reverseOrder={false} />
         <div className='order-2 md:order-1 w-full md:w-1/2 h-fit py-8 md:h-screen min-h-full flex items-center justify-center'>
             <div className="flex flex-col gap-6 w-[90%] md:w-[50%]">
                 <AuthPagesHeader />
@@ -98,7 +88,13 @@ const ChangenewPasswordPage: React.FC<ChangenewPasswordPageProps> = ({ data }) =
                             />
                         </div>
 
-                        <ButtonOne type='submit' classes='py-2 px-16 w-full' btnText1='Change Password' />
+                        <ButtonOne
+                            type='submit'
+                            classes='py-2 px-16 w-full'
+                            disabled={isSubmitting}
+                            icon1={isSubmitting ? <LoadingSpinner color='text-white' /> : ''}
+                            btnText1={isSubmitting ? 'Processing...' : 'Change Password'}
+                        />
                         
                         <p className='text-center text-sm'>Don&apos;t have an account? <Link href='/register' className='text-blue-600'>Sign up</Link></p>
                     </form>

@@ -59,6 +59,7 @@ const RegisterPage: React.FC<RegisterProps> = ({ data }) => {
         setBtnIsDisabled(true);
     } else {
         setBtnIsDisabled(false);
+        setIsLoading(false);
     }
     }, [newUserData, isLoading]);
 
@@ -122,14 +123,13 @@ const RegisterPage: React.FC<RegisterProps> = ({ data }) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isSubmitting, errors },
       } = useForm<RegisterType>({
         resolver: zodResolver(registerSchema),
         defaultValues: data,
       });
     
       const onFormSubmit = handleSubmit(async (data) => {        
-        setIsLoading(true);
         // console.log(data);
         const UserData = {
             first_name: data.first_name,
@@ -171,8 +171,6 @@ const RegisterPage: React.FC<RegisterProps> = ({ data }) => {
             setTimeout(() => {
                 showToast(`Error: ${(error as Error).message || 'An unexpected error occurred'}`, 'error');
             }, 500);
-        } finally {
-            setIsLoading(false);
         }
     });
       
@@ -377,9 +375,9 @@ const RegisterPage: React.FC<RegisterProps> = ({ data }) => {
                         <ButtonOne
                             type='submit'
                             classes='py-2 px-16 w-full'
-                            disabled={btnIsDisabled}
-                            icon1={isLoading ? <LoadingSpinner color='text-white' /> : ''}
-                            btnText1={isLoading ? 'Registering...' : 'Sign up'}
+                            disabled={isSubmitting || btnIsDisabled}
+                            icon1={isSubmitting ? <LoadingSpinner color='text-white' /> : ''}
+                            btnText1={isSubmitting ? 'Registering...' : 'Sign up'}
                         />
                         
                         <p className='text-center text-sm'>Already have an account? <Link href='/login' className='text-blue-600 font-semibold'>Login</Link></p>

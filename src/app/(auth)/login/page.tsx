@@ -14,7 +14,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form';
-import { Toaster } from 'react-hot-toast';
 
 interface LoginProps {
     data?: LoginType;
@@ -22,7 +21,7 @@ interface LoginProps {
 
 const LoginPage: React.FC<LoginProps> = ({ data }) => {
     const [isPasswordOpen, setIsPasswordOpen] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+    // const [isLoading, setIsLoading] = useState(false);
 
     const router = useRouter();
 
@@ -31,7 +30,7 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { isSubmitting, errors },
         } = useForm<LoginType>({
         resolver: zodResolver(loginSchema),
         defaultValues: data,
@@ -39,7 +38,6 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
     
     const onFormSubmit = handleSubmit(async (data) => {
         try {
-            setIsLoading(true);
             const res = await loginUser(data.email, data.password);
             
             if (res.success) {
@@ -52,7 +50,6 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
                     name: user.name,
                 }));
                 
-                setIsLoading(false);
                 router.push('/dashboard');
             }
 
@@ -61,7 +58,6 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
             }, 500);            
         } catch (error) {
             // console.log((error as Error).message);
-            setIsLoading(false);
             setTimeout(() => {
                 showToast(`Error: ${(error as Error).message || 'An unexpected error occurred'}`, 'error');
             }, 500);            
@@ -74,7 +70,6 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
 
   return (
     <div className='h-full min-h-screen w-full flex flex-col md:flex-row '>
-        <Toaster position="top-center" reverseOrder={false} />
         <div className='order-2 md:order-1 w-full md:w-1/2 h-fit py-8 md:h-screen min-h-full flex items-center justify-center'>
             <div className="flex flex-col gap-6 w-[90%] md:w-[70%] lg:w-[60%] xl:w-[50%]">
                 <AuthPagesHeader />
@@ -116,9 +111,9 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
                         <ButtonOne
                             type='submit'
                             classes='py-2 px-16 w-full'
-                            disabled={isLoading}
-                            icon1={isLoading ? <LoadingSpinner color='text-white' /> : ''}
-                            btnText1={isLoading ? 'Logging...' : 'Login'}
+                            disabled={isSubmitting}
+                            icon1={isSubmitting ? <LoadingSpinner color='text-white' /> : ''}
+                            btnText1={isSubmitting ? 'Logging...' : 'Login'}
                         />
                         
                         <p className='text-center text-sm'>Don&apos;t have an account? <Link href='/register' className='text-blue-600 font-semibold'>Sign up</Link></p>

@@ -29,8 +29,6 @@ const Sidebar: React.FC<SidebarProps> = ({ show = 'hidden', closeSidebar = () =>
     
     const router = useRouter();
 
-    if (hasError) return <div>Error loading user data</div>;
-
     const logout = () => {
         router.push('/');
         dropLoggedInUserInfo();
@@ -78,6 +76,7 @@ const Sidebar: React.FC<SidebarProps> = ({ show = 'hidden', closeSidebar = () =>
                                     />
                                 </div>
                                 {isPending ? <LoadingSpinner /> : 
+                                hasError ? <em className='text-sm'>Error loading user data</em> : 
                                 <div className='flex flex-col'>
                                     <p className='capitalize text-[12px] text-textGray font-semibold'>{user.name}</p>
                                     <p className='text-[10px] text-textGray'>{user.email}</p>
