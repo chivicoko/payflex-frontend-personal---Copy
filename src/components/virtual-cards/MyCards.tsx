@@ -28,7 +28,7 @@ const MyCards = () => {
         {singleCard === null ? 
           <div className='w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2'>
             {virtualCards.map(card =>
-            <VirtualCard card={card} getSingleCard={getSingleCard} />
+            <VirtualCard key={card.id} card={card} getSingleCard={getSingleCard} />
           )}
           </div>
           : <VirtualCardDetails singleCard={singleCard} goBackToAllCards={goBackToAllCards} />}

@@ -1,6 +1,6 @@
 "use client";
 
-import { AssuredWorkload, AttachMoneyOutlined } from '@mui/icons-material';
+import { AssuredWorkload } from '@mui/icons-material';
 import ButtonNeutral from '../button/ButtonNeutral';
 import ButtonOne from '../button/ButtonOne';
 import InputField from '../inputs/InputField';

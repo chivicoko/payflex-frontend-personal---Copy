@@ -19,8 +19,6 @@ const Navbar: React.FC = () => {
     hasError,
   } = useUserData();
 
-  if (hasError) return <div>Error loading user data</div>;
-
   const { user } = userDashboardData || {};
 
   useEffect(() => {
@@ -29,6 +27,8 @@ const Navbar: React.FC = () => {
       if (nameArray) setFirstName(nameArray[0]);
     }
   }, [user?.name, user]);
+
+  if (hasError) return <div>Error loading user data</div>;
   
   const closeSidebar = () => setOpen(false);
 

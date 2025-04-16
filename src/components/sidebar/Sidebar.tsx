@@ -25,11 +25,11 @@ const Sidebar: React.FC<SidebarProps> = ({ show = 'hidden', closeSidebar = () =>
     hasError,
     } = useUserData();
 
-    if (hasError) return <div>Error loading user data</div>;
-
     const { user } = userDashboardData || {};
     
     const router = useRouter();
+
+    if (hasError) return <div>Error loading user data</div>;
 
     const logout = () => {
         router.push('/');

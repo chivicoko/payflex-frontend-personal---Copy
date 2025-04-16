@@ -22,6 +22,7 @@ const DashboardHeader = () => {
   const setCurrentData = useGeneralData((state) => state.setCurrentData);
 
   const token = useAuthToken();
+  console.log(isPaystackVerified);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -36,8 +37,6 @@ const DashboardHeader = () => {
     isPending,
     hasError,
   } = useUserData();
-
-  if (hasError) return <div>Error loading user data</div>;
 
   const { wallet } = userDashboardData || {};
 
@@ -64,8 +63,10 @@ const DashboardHeader = () => {
       setIsPaystackVerified(true);
       // console.log(referenceData);
     }
-  }, [reference, token, referenceData]);  
+  }, [reference, token, referenceData, currentData, setCurrentData]);
   
+  if (hasError) return <div>Error loading user data</div>;
+
   const handleBalanceToggle = (id: number) => {
     setOpenBalances(prev => {
       const updated = new Set(prev);
