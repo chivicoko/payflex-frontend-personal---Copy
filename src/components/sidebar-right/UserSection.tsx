@@ -15,7 +15,7 @@ const UserSection = () => {
     if (hasError) return <div>Error loading user data</div>;
 
     const { user } = userDashboardData || {};
-    
+
   return (
     <div>
         <div className="relative mb-16">
