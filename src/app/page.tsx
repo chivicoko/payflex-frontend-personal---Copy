@@ -14,6 +14,7 @@ const HomePage: React.FC = () => {
       <Navbar/>
       <Hero />
       <Features />
+      <div>pppppppp</div>
       <VirtualCards />
       <GiftCards />
       <Testimonials />
