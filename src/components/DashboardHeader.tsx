@@ -15,14 +15,14 @@ import { useGeneralData } from '@/stores/useGeneralData';
 
 const DashboardHeader = () => {
   const [openBalances, setOpenBalances] = useState<Set<number>>(new Set());
-  const [isPaystackVerified, setIsPaystackVerified] = useState(false);
+  // const [isPaystackVerified, setIsPaystackVerified] = useState(false);
   const [reference, setReference] = useState<string | null>(null);
   
   const currentData = useGeneralData((state) => state.currentData);
   const setCurrentData = useGeneralData((state) => state.setCurrentData);
 
   const token = useAuthToken();
-  console.log(isPaystackVerified);
+  // console.log(isPaystackVerified);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -60,7 +60,7 @@ const DashboardHeader = () => {
     if (referenceData?.success) {
       showToast(referenceData.message);
       setCurrentData({ ...currentData, currentTab: '/' });
-      setIsPaystackVerified(true);
+      // setIsPaystackVerified(true);
       // console.log(referenceData);
     }
   }, [reference, token, referenceData, currentData, setCurrentData]);
