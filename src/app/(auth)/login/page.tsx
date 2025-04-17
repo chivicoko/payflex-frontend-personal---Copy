@@ -64,10 +64,6 @@ const LoginPage: React.FC<LoginProps> = ({ data }) => {
         }
     });
 
-    // if (isLoading) {
-    //     return <Loading />;
-    // };
-
   return (
     <div className='h-full min-h-screen w-full flex flex-col md:flex-row '>
         <div className='order-2 md:order-1 w-full md:w-1/2 h-fit py-8 md:h-screen min-h-full flex items-center justify-center'>
